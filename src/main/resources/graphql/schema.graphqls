@@ -1,0 +1,55 @@
+# Base type
+type User {
+    id: ID!
+    firstname: String!
+    lastname: String!
+    email: String!
+    posts: [Post!]
+}
+
+type Post {
+    id: ID!
+    tittle: String!
+    content: String!
+    user: User!
+}
+
+# Output types
+type UserDto {
+    id: ID
+    firstname: String
+    lastname: String
+    email: String
+    posts: [PostDto]
+}
+
+type PostDto {
+    id: ID
+    title: String!
+    content: String!
+    user: UserDto
+}
+
+# Input types
+input UserUpdateInput {
+    id: ID!
+    firstname: String
+    lastname: String
+    email: String
+}
+
+input UserCreateInput {
+    firstname: String!
+    lastname: String!
+    email: String!
+}
+
+type Query {
+    getAllUser: [UserDto!]!
+    getUserById(id: ID!): UserDto
+}
+
+type Mutation {
+    createUser(userDto: UserCreateInput!): UserDto!
+    updateUser(userDto: UserUpdateInput!): UserDto!
+}
