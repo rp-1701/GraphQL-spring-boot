@@ -55,7 +55,7 @@ type PostDto {
     id: ID
     title: String!
     content: String!
-    user: UserDto
+    userId: ID!
 }
 ```
 
@@ -74,6 +74,8 @@ query {
     posts {
       id
       title
+      content
+      userId
     }
   }
 }
@@ -91,6 +93,18 @@ query {
       title
       content
     }
+  }
+}
+```
+
+3. **Get Posts by User ID**
+```graphql
+query {
+  getPostByUserId(userId: "1") {
+    id
+    title
+    content
+    userId
   }
 }
 ```
@@ -137,6 +151,48 @@ mutation {
   }
 }
 ```
+
+4. **Create Post**
+```graphql
+mutation {
+  createPost(postDto: {
+    title: "My First Post"
+    content: "This is the content"
+    userId: "1"
+  }) {
+    id
+    title
+    content
+    userId
+  }
+}
+```
+
+5. **Update Post**
+```graphql
+mutation {
+  updatePost(postDto: {
+    id: "1"
+    title: "Updated Title"
+    content: "Updated content"
+    userId: "1"
+  }) {
+    id
+    title
+    content
+    userId
+  }
+}
+```
+
+6. **Delete Post**
+```graphql
+mutation {
+  deletePost(id: "1")
+}
+```
+
+
 
 
 
