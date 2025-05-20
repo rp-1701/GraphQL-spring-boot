@@ -1,5 +1,6 @@
 package com.interview.practice.graphqlspringboot.service;
 
+import com.interview.practice.graphqlspringboot.dto.DeleteUserResponse;
 import com.interview.practice.graphqlspringboot.dto.PostDto;
 import com.interview.practice.graphqlspringboot.dto.UserDto;
 import com.interview.practice.graphqlspringboot.entity.Post;
@@ -106,5 +107,16 @@ public class UserService {
                 .collect(Collectors.toList());
             user.setPosts(posts);
         }
+    }
+
+    public DeleteUserResponse deleteUser(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+        userRepository.delete(user);
+        
+        return new DeleteUserResponse(
+            String.format("User with ID %d has been successfully deleted", id)
+            
+        );
     }
 }

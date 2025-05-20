@@ -1,5 +1,6 @@
 package com.interview.practice.graphqlspringboot.controller;
 
+import com.interview.practice.graphqlspringboot.dto.DeleteUserResponse;
 import com.interview.practice.graphqlspringboot.dto.UserDto;
 import com.interview.practice.graphqlspringboot.service.UserService;
 import java.util.List;
@@ -25,6 +26,11 @@ public class UserController {
     @MutationMapping("updateUser")
     public UserDto updateUser(@Argument("userDto") UserDto userDto) {
         return userService.updateUser(userDto);
+    }
+
+    @MutationMapping("deleteUser")
+    public DeleteUserResponse deleteUser(@Argument("id") Long id) {
+        return userService.deleteUser(id);
     }
 
     @QueryMapping
