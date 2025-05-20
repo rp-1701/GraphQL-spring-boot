@@ -1,7 +1,6 @@
 package com.interview.practice.graphqlspringboot.controller;
 
 import com.interview.practice.graphqlspringboot.dto.PostDto;
-import com.interview.practice.graphqlspringboot.dto.UserDto;
 import com.interview.practice.graphqlspringboot.service.PostService;
 import java.util.List;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -23,7 +22,7 @@ public class PostController {
         return postService.createPost(postDto);
     }
 
-    @MutationMapping("postDto")
+    @MutationMapping("updatePost")
     public PostDto updatePost(@Argument("postDto") PostDto postDto) {
         return postService.updatePost(postDto);
     }
@@ -36,5 +35,10 @@ public class PostController {
     @QueryMapping("deletePost")
     public String deletePost(@Argument Long id) {
         return postService.deletePost(id);
+    }
+
+    @QueryMapping("getAllPost")
+    public List<PostDto> getAllPost() {
+        return postService.getAllPost();
     }
 }

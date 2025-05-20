@@ -45,8 +45,10 @@ public class PostService {
         Post post = postRepository.findById(postDto.getId())
                 .orElseThrow(() -> new RuntimeException("Post not found with id: " + postDto.getId()));
 
-        post.setTitle(postDto.getTitle());
-        post.setContent(postDto.getContent());
+        if (postDto.getTitle() != null)
+            post.setTitle(postDto.getTitle());
+        if (postDto.getContent() != null)
+            post.setContent(postDto.getContent());
 
         // update the user_id if different
         if (postDto.getUserId() != null && !post.getUser().getId().equals(postDto.getUserId())) {
@@ -71,5 +73,12 @@ public class PostService {
     public String deletePost(Long id) {
         postRepository.deleteById(id);
         return String.format("Post with id %d deleted successfully", id);
+    }
+
+    public List<PostDto> getAllPost() {
+        return postRepository.findAll()
+                .stream()
+                .map(this::convertToDto)
+                .toList();
     }
 }

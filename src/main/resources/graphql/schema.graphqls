@@ -11,7 +11,7 @@ type PostDto {
     id: ID
     title: String!
     content: String!
-    user_id: UserDto
+    userId: ID!
 }
 
 # Input types
@@ -36,9 +36,9 @@ input PostCreateInput {
 
 input PostUpdateInput {
     id: ID!
-    title: String!
-    content: String!
-    userId: ID!
+    title: String
+    content: String
+    userId: ID
 }
 
 # Response type for delete operation
@@ -52,8 +52,9 @@ type Query {
     getUserById(id: ID!): UserDto
 
     # Post queries
-    getPostByUserId(id : ID!) : [PostDto!]
-    deletePost(id : ID!) : String!
+    getPostByUserId(userId: ID!) : [PostDto!]
+    deletePost(id: ID!) : String!
+    getAllPost: [PostDto!]
 }
 
 type Mutation {
