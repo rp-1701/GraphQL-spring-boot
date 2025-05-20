@@ -5,6 +5,7 @@ import com.interview.practice.graphqlspringboot.dto.PostDto;
 import com.interview.practice.graphqlspringboot.dto.UserDto;
 import com.interview.practice.graphqlspringboot.entity.Post;
 import com.interview.practice.graphqlspringboot.entity.User;
+import com.interview.practice.graphqlspringboot.exception.ResourceNotFoundException;
 import com.interview.practice.graphqlspringboot.repository.UserRepository;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +36,7 @@ public class UserService {
     public UserDto getUserById(Long id) {
         return userRepository.findById(id)
                 .map(this::convertToDto)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id.toString()));
     }
 
     private User convertToEntity(UserDto userDto) {
@@ -64,6 +65,7 @@ public class UserService {
                     postDto.setId(post.getId());
                     postDto.setTitle(post.getTitle());
                     postDto.setContent(post.getContent());
+                    postDto.setUserId(post.getUser().getId());
                     return postDto;
                 })
                 .collect(Collectors.toList());
@@ -75,7 +77,7 @@ public class UserService {
 
     public UserDto updateUser(UserDto userDto) {
         User user = userRepository.findById(userDto.getId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userDto.getId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userDto.getId().toString()));
 
         if (userDto.getFirstname() != null) {
             user.setFirstname(userDto.getFirstname());
@@ -111,12 +113,11 @@ public class UserService {
 
     public DeleteUserResponse deleteUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", id.toString()));
         userRepository.delete(user);
         
         return new DeleteUserResponse(
             String.format("User with ID %d has been successfully deleted", id)
-            
         );
     }
 }

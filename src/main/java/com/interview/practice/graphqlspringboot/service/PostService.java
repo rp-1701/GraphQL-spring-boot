@@ -3,6 +3,7 @@ package com.interview.practice.graphqlspringboot.service;
 import com.interview.practice.graphqlspringboot.dto.PostDto;
 import com.interview.practice.graphqlspringboot.entity.Post;
 import com.interview.practice.graphqlspringboot.entity.User;
+import com.interview.practice.graphqlspringboot.exception.ResourceNotFoundException;
 import com.interview.practice.graphqlspringboot.repository.PostRepository;
 import com.interview.practice.graphqlspringboot.repository.UserRepository;
 import java.util.List;
@@ -21,7 +22,7 @@ public class PostService {
 
     public PostDto createPost(PostDto postDto) {
         User user = userRepository.findById(postDto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + postDto.getUserId()));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", postDto.getUserId().toString()));
 
         Post post = new Post();
         post.setTitle(postDto.getTitle());
@@ -43,18 +44,19 @@ public class PostService {
 
     public PostDto updatePost(PostDto postDto) {
         Post post = postRepository.findById(postDto.getId())
-                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postDto.getId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "id", postDto.getId().toString()));
 
-        if (postDto.getTitle() != null)
+        if (postDto.getTitle() != null) {
             post.setTitle(postDto.getTitle());
-        if (postDto.getContent() != null)
+        }
+        
+        if (postDto.getContent() != null) {
             post.setContent(postDto.getContent());
+        }
 
-        // update the user_id if different
         if (postDto.getUserId() != null && !post.getUser().getId().equals(postDto.getUserId())) {
             User user = userRepository.findById(postDto.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + postDto.getUserId()));
-
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", postDto.getUserId().toString()));
             post.setUser(user);
         }
 
@@ -63,14 +65,23 @@ public class PostService {
     }
 
     public List<PostDto> getPostByUserId(Long userId) {
+        // First check if user exists
+        if (!userRepository.existsById(userId)) {
+            throw new ResourceNotFoundException("User", "id", userId.toString());
+        }
+        
         return postRepository.findPostByUserId(userId)
-                .orElseThrow(() -> new RuntimeException("No posts found for user with id: " + userId))
+                .orElseThrow(() -> new ResourceNotFoundException("Posts", "userId", userId.toString()))
                 .stream()
                 .map(this::convertToDto)
                 .toList();
     }
 
     public String deletePost(Long id) {
+        if (!postRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Post", "id", id.toString());
+        }
+        
         postRepository.deleteById(id);
         return String.format("Post with id %d deleted successfully", id);
     }
