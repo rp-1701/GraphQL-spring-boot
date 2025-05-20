@@ -5,6 +5,7 @@ import com.interview.practice.graphqlspringboot.entity.Post;
 import com.interview.practice.graphqlspringboot.entity.User;
 import com.interview.practice.graphqlspringboot.repository.PostRepository;
 import com.interview.practice.graphqlspringboot.repository.UserRepository;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,15 +23,12 @@ public class PostService {
         User user = userRepository.findById(postDto.getUserId())
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + postDto.getUserId()));
 
-        // Create and save the post
         Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setContent(postDto.getContent());
         post.setUser(user);
 
         Post savedPost = postRepository.save(post);
-
-        // Convert to DTO for response
         return convertToDto(savedPost);
     }
 
@@ -41,5 +39,37 @@ public class PostService {
         postDto.setContent(post.getContent());
         postDto.setUserId(post.getUser().getId());
         return postDto;
+    }
+
+    public PostDto updatePost(PostDto postDto) {
+        Post post = postRepository.findById(postDto.getId())
+                .orElseThrow(() -> new RuntimeException("Post not found with id: " + postDto.getId()));
+
+        post.setTitle(postDto.getTitle());
+        post.setContent(postDto.getContent());
+
+        // update the user_id if different
+        if (postDto.getUserId() != null && !post.getUser().getId().equals(postDto.getUserId())) {
+            User user = userRepository.findById(postDto.getUserId())
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + postDto.getUserId()));
+
+            post.setUser(user);
+        }
+
+        Post updatedPost = postRepository.save(post);
+        return convertToDto(updatedPost);
+    }
+
+    public List<PostDto> getPostByUserId(Long userId) {
+        return postRepository.findPostByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("No posts found for user with id: " + userId))
+                .stream()
+                .map(this::convertToDto)
+                .toList();
+    }
+
+    public String deletePost(Long id) {
+        postRepository.deleteById(id);
+        return String.format("Post with id %d deleted successfully", id);
     }
 }
