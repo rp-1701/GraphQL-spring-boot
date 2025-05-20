@@ -5,7 +5,7 @@ public class PostDto {
     private Long id;
     private String title;
     private String content;
-    private UserDto user;
+    private Long userId;
 
     public Long getId() {
         return id;
@@ -31,11 +31,11 @@ public class PostDto {
         this.content = content;
     }
 
-    public UserDto getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(UserDto user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

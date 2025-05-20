@@ -11,12 +11,7 @@ type PostDto {
     id: ID
     title: String!
     content: String!
-    user: UserDto
-}
-
-# Response type for delete operation
-type DeleteUserResponse {
-    message: String!
+    user_id: UserDto
 }
 
 # Input types
@@ -33,13 +28,28 @@ input UserCreateInput {
     email: String!
 }
 
+input PostCreateInput {
+    title: String!
+    content: String!
+    userId: ID!
+}
+
+# Response type for delete operation
+type DeleteUserResponse {
+    message: String!
+}
+
 type Query {
     getAllUser: [UserDto!]!
     getUserById(id: ID!): UserDto
 }
 
 type Mutation {
+    # User mutations
     createUser(userDto: UserCreateInput!): UserDto!
     updateUser(userDto: UserUpdateInput!): UserDto!
     deleteUser(id: ID!): DeleteUserResponse!
+    
+    # Post mutations
+    createPost(postDto: PostCreateInput!): PostDto!
 }
