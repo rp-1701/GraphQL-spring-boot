@@ -11,7 +11,7 @@ This project demonstrates the implementation of a GraphQL API using Spring Boot,
 ### Installation Steps
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/rp-1701/GraphQL-spring-boot.git
    cd graphQL-springBoot
    ```
 
